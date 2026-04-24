@@ -4,7 +4,11 @@
     "slug": "LUCTReporting",
     "version": "1.0.0",
     "orientation": "portrait",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
@@ -20,6 +24,12 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.rethabilekhosi.LUCTReporting"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "cfce50b5-b7e5-4a7d-969b-903a1513518a"
       }
     }
   }

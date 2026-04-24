@@ -31,7 +31,7 @@ export default function StudentDashboard() {
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.greeting}>Hello, Student 👋</Text>
+          <Text style={styles.greeting}>Hello, Student</Text>
           <Text style={styles.email}>{user?.email}</Text>
         </View>
         <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
@@ -55,7 +55,7 @@ export default function StudentDashboard() {
       </View>
 
       <View style={styles.infoBox}>
-        <Text style={styles.infoTitle}>📌 Notice</Text>
+        <Text style={styles.infoTitle}>Notice</Text>
         <Text style={styles.infoText}>
           Use the tabs below to monitor your classes, check attendance records,
           and rate your lecturers.

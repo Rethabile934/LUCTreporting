@@ -71,12 +71,12 @@ export default function PLDashboard() {
       </View>
 
       <View style={styles.infoBox}>
-        <Text style={styles.infoTitle}>📌 Your Responsibilities</Text>
+        <Text style={styles.infoTitle}>Your Responsibilities</Text>
         <Text style={styles.infoText}>
           • Add and assign lecture modules to courses{'\n'}
           • View reports submitted by PRLs{'\n'}
           • Monitor all classes and lecturers{'\n'}
-          • Rate lecturer performance
+          
         </Text>
       </View>
     </ScrollView>
