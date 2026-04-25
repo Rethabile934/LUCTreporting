@@ -109,8 +109,8 @@ export default function PRLReportsScreen() {
                 <Text style={styles.course}>{item.courseName}</Text>
                 <Text style={styles.week}>{item.weekOfReporting}</Text>
               </View>
-              <Text style={styles.detail}>👨‍🏫 {item.lecturerName}</Text>
-              <Text style={styles.detail}>📚 {item.topicTaught}</Text>
+              <Text style={styles.detail}>{item.lecturerName}</Text>
+              <Text style={styles.detail}>{item.topicTaught}</Text>
               <Text style={styles.detail}>
                 👥 {item.actualStudentsPresent}/{item.totalRegisteredStudents} present
               </Text>
@@ -118,9 +118,9 @@ export default function PRLReportsScreen() {
 
             {expanded === item.id && (
               <View style={styles.expanded}>
-                <Text style={styles.expandLabel}>📍 Venue: {item.venue}</Text>
-                <Text style={styles.expandLabel}>🕐 Time: {item.scheduledTime}</Text>
-                <Text style={styles.expandLabel}>📅 Date: {item.dateOfLecture}</Text>
+                <Text style={styles.expandLabel}>Venue: {item.venue}</Text>
+                <Text style={styles.expandLabel}>Time: {item.scheduledTime}</Text>
+                <Text style={styles.expandLabel}>Date: {item.dateOfLecture}</Text>
                 <Text style={styles.expandLabel}>Learning Outcomes:</Text>
                 <Text style={styles.expandText}>{item.learningOutcomes}</Text>
                 <Text style={styles.expandLabel}>Recommendations:</Text>

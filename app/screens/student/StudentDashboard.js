@@ -22,9 +22,9 @@ export default function StudentDashboard() {
   };
 
   const cards = [
-    { icon: '📊', label: 'Monitoring', color: '#4A90D9' },
-    { icon: '📋', label: 'Attendance', color: '#27ae60' },
-    { icon: '⭐', label: 'Rating', color: '#f39c12' },
+    {  label: 'Monitoring', color: '#4A90D9' },
+    {  label: 'Attendance', color: '#27ae60' },
+    {  label: 'Rating', color: '#f39c12' },
   ];
 
   return (

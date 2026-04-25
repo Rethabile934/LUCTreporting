@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import PLDashboard from '../screens/pl/PLDashboard';
 import PLCoursesScreen from '../screens/pl/PLCoursesScreen';
 import PLReportsScreen from '../screens/pl/PLReportsScreen';
@@ -10,15 +11,16 @@ import ExportReportScreen from '../screens/lecturer/ExportReportScreen';
 
 const Tab = createBottomTabNavigator();
 
-const icon = (name) => () => (
-  <Text style={{ fontSize: 20 }}>
-    {name === 'Home' ? '🏠'
-      : name === 'Courses' ? '📚'
-      : name === 'Reports' ? '📝'
-      : name === 'Monitoring' ? '📊'
-      : '👨‍🏫'}
-  </Text>
-);
+const icon = (name) => ({ color }) => {
+  const icons = {
+    Home: 'home',
+    Courses: 'book',
+    Reports: 'document-text',
+    Monitoring: 'bar-chart',
+    Lecturers: 'people'
+  };
+  return <Ionicons name={icons[name]} size={22} color={color} />;
+};
 
 export default function PLNavigator() {
   return (

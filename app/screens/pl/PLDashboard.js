@@ -37,9 +37,9 @@ export default function PLDashboard() {
   };
 
   const statCards = [
-    { label: 'Total Reports', value: stats.reports, icon: '📝', color: '#4A90D9' },
-    { label: 'Lecturers', value: stats.lecturers, icon: '👨‍🏫', color: '#9b59b6' },
-    { label: 'Courses', value: stats.courses, icon: '📚', color: '#e67e22' },
+    { label: 'Total Reports', value: stats.reports, color: '#4A90D9' },
+    { label: 'Lecturers', value: stats.lecturers,color: '#9b59b6' },
+    { label: 'Courses', value: stats.courses,color: '#e67e22' },
   ];
 
   return (

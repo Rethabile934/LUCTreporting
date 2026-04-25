@@ -66,10 +66,10 @@ export default function PLMonitoringScreen() {
               <Text style={styles.course}>{item.courseName}</Text>
               <Text style={styles.week}>{item.weekOfReporting}</Text>
             </View>
-            <Text style={styles.detail}>👨‍🏫 {item.lecturerName}</Text>
-            <Text style={styles.detail}>🏫 {item.facultyName}</Text>
-            <Text style={styles.detail}>📍 {item.venue} · 🕐 {item.scheduledTime}</Text>
-            <Text style={styles.detail}>📅 {item.dateOfLecture}</Text>
+            <Text style={styles.detail}> {item.lecturerName}</Text>
+            <Text style={styles.detail}>{item.facultyName}</Text>
+            <Text style={styles.detail}> {item.venue} · {item.scheduledTime}</Text>
+            <Text style={styles.detail}>{item.dateOfLecture}</Text>
             <Text style={styles.detail}>
               👥 {item.actualStudentsPresent}/{item.totalRegisteredStudents} present
             </Text>

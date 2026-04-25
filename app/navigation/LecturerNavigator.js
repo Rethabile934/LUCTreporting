@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import LecturerDashboard from '../screens/lecturer/LecturerDashboard';
 import ReportFormScreen from '../screens/lecturer/ReportFormScreen';
 import ClassesScreen from '../screens/lecturer/ClassesScreen';
@@ -10,16 +11,17 @@ import ExportReportScreen from '../screens/lecturer/ExportReportScreen';
 
 const Tab = createBottomTabNavigator();
 
-const icon = (name) => () => (
-  <Text style={{ fontSize: 20 }}>
-    {name === 'Home' ? '🏠'
-      : name === 'Report' ? '📝'
-      : name === 'Classes' ? '🏫'
-      : name === 'Attendance' ? '📋'
-      : '⭐'}
-  </Text>
-);
-
+const icon = (name) => ({ color }) => {
+  const icons = {
+    Home: 'home',
+    Report: 'document-text',
+    Classes: 'school',
+    Attendance: 'people',
+    Rating: 'star',
+    Export: 'download'
+  };
+  return <Ionicons name={icons[name]} size={22} color={color} />;
+};
 export default function LecturerNavigator() {
   return (
     <Tab.Navigator

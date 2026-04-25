@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import PRLDashboard from '../screens/prl/PRLDashboard';
 import PRLReportsScreen from '../screens/prl/PRLReportsScreen';
 import PRLCoursesScreen from '../screens/prl/PRLCoursesScreen';
@@ -9,16 +10,16 @@ import PRLRatingScreen from '../screens/prl/PRLRatingScreen';
 
 const Tab = createBottomTabNavigator();
 
-const icon = (name) => () => (
-  <Text style={{ fontSize: 20 }}>
-    {name === 'Home' ? '🏠'
-      : name === 'Reports' ? '📝'
-      : name === 'Courses' ? '📚'
-      : name === 'Monitoring' ? '📊'
-      : '⭐'}
-  </Text>
-);
-
+const icon = (name) => ({ color }) => {
+  const icons = {
+    Home: 'home',
+    Reports: 'document-text',
+    Courses: 'book',
+    Monitoring: 'bar-chart',
+    Rating: 'star'
+  };
+  return <Ionicons name={icons[name]} size={22} color={color} />;
+};
 export default function PRLNavigator() {
   return (
     <Tab.Navigator

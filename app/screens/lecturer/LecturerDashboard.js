@@ -39,9 +39,9 @@ export default function LecturerDashboard() {
 };
 
   const statCards = [
-    { label: 'Reports Submitted', value: stats.reports, icon: '📝', color: '#4A90D9' },
-    { label: 'Total Students', value: stats.students, icon: '👥', color: '#27ae60' },
-    { label: 'Avg Attendance', value: `${stats.avgAttendance}%`, icon: '📊', color: '#f39c12' },
+    { label: 'Reports Submitted', value: stats.reports, },
+    { label: 'Total Students', value: stats.students, },
+    { label: 'Avg Attendance', value: `${stats.avgAttendance}%`, },
   ];
 
   return (

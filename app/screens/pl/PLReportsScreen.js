@@ -68,8 +68,8 @@ export default function PLReportsScreen() {
               <Text style={styles.course}>{item.courseName}</Text>
               <Text style={styles.week}>{item.weekOfReporting}</Text>
             </View>
-            <Text style={styles.detail}>👨‍🏫 {item.lecturerName}</Text>
-            <Text style={styles.detail}>📚 {item.topicTaught}</Text>
+            <Text style={styles.detail}>{item.lecturerName}</Text>
+            <Text style={styles.detail}>{item.topicTaught}</Text>
             <Text style={styles.detail}>
               👥 {item.actualStudentsPresent}/{item.totalRegisteredStudents} present
             </Text>

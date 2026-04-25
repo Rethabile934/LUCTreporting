@@ -39,9 +39,9 @@ export default function PRLDashboard() {
   };
 
   const statCards = [
-    { label: 'Total Reports', value: stats.reports, icon: '📝', color: '#4A90D9' },
-    { label: 'Lecturers', value: stats.lecturers, icon: '👨‍🏫', color: '#27ae60' },
-    { label: 'Avg Attendance', value: `${stats.avgAttendance}%`, icon: '📊', color: '#f39c12' },
+    { label: 'Total Reports', value: stats.reports,color: '#4A90D9' },
+    { label: 'Lecturers', value: stats.lecturers, color: '#27ae60' },
+    { label: 'Avg Attendance', value: `${stats.avgAttendance}%`, color: '#f39c12' },
   ];
 
   return (

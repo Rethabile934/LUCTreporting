@@ -89,8 +89,8 @@ export default function RatingScreen() {
         renderItem={({ item }) => (
           <View style={styles.card}>
             <Text style={styles.course}>{item.courseName}</Text>
-            <Text style={styles.sub}>👨‍🏫 {item.lecturerName} · {item.weekOfReporting}</Text>
-            <Text style={styles.topic}>📚 {item.topicTaught}</Text>
+            <Text style={styles.sub}> {item.lecturerName} · {item.weekOfReporting}</Text>
+            <Text style={styles.topic}>{item.topicTaught}</Text>
             {ratings[item.id] ? (
               <View style={styles.ratedRow}>
                 <Text style={styles.ratedText}>

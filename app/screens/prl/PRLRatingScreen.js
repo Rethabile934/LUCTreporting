@@ -72,7 +72,7 @@ export default function PRLRatingScreen() {
             <View style={styles.row}>
               <View style={{ flex: 1 }}>
                 <Text style={styles.course}>{item.courseName}</Text>
-                <Text style={styles.sub}>👨‍🏫 {item.lecturerName} · {item.weekOfReporting}</Text>
+                <Text style={styles.sub}>{item.lecturerName} · {item.weekOfReporting}</Text>
               </View>
               {item.avgRating ? (
                 <View style={styles.ratingBadge}>

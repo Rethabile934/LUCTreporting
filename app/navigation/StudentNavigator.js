@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import StudentDashboard from '../screens/student/StudentDashboard';
 import MonitoringScreen from '../screens/student/MonitoringScreen';
 import AttendanceScreen from '../screens/student/AttendanceScreen';
@@ -8,11 +9,15 @@ import RatingScreen from '../screens/student/RatingScreen';
 
 const Tab = createBottomTabNavigator();
 
-const icon = (name) => ({ focused }) => (
-  <Text style={{ fontSize: 20 }}>
-    {name === 'Home' ? '🏠' : name === 'Monitor' ? '📊' : name === 'Attendance' ? '📋' : '⭐'}
-  </Text>
-);
+const icon = (name) => ({ color }) => {
+  const icons = {
+    Home: 'home',
+    Monitor: 'bar-chart',
+    Attendance: 'clipboard',
+    Rating: 'star'
+  };
+  return <Ionicons name={icons[name]} size={22} color={color} />;
+};
 
 export default function StudentNavigator() {
   return (

@@ -117,8 +117,8 @@ export default function PLCoursesScreen() {
           <View style={styles.card}>
             <Text style={styles.courseName}>{item.courseName}</Text>
             <Text style={styles.code}>{item.courseCode}</Text>
-            {item.facultyName ? <Text style={styles.detail}>🏫 {item.facultyName}</Text> : null}
-            {item.assignedTo ? <Text style={styles.detail}>👨‍🏫 {item.assignedTo}</Text> : null}
+            {item.facultyName ? <Text style={styles.detail}>{item.facultyName}</Text> : null}
+            {item.assignedTo ? <Text style={styles.detail}>{item.assignedTo}</Text> : null}
           </View>
         )}
       />

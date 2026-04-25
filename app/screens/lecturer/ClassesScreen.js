@@ -73,9 +73,9 @@ export default function ClassesScreen() {
               <Text style={styles.week}>{item.weekOfReporting}</Text>
             </View>
             <Text style={styles.course}>{item.courseName} · {item.courseCode}</Text>
-            <Text style={styles.detail}>📍 {item.venue}</Text>
-            <Text style={styles.detail}>🕐 {item.scheduledTime}</Text>
-            <Text style={styles.detail}>📅 {item.dateOfLecture}</Text>
+            <Text style={styles.detail}> {item.venue}</Text>
+            <Text style={styles.detail}> {item.scheduledTime}</Text>
+            <Text style={styles.detail}> {item.dateOfLecture}</Text>
             <Text style={styles.detail}>
               👥 {item.actualStudentsPresent}/{item.totalRegisteredStudents} present
             </Text>
