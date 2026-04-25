@@ -3,7 +3,7 @@ import {
   View, Text, StyleSheet, FlatList,
   ActivityIndicator, TextInput
 } from 'react-native';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 
 export default function PLMonitoringScreen() {
@@ -27,15 +27,18 @@ export default function PLMonitoringScreen() {
     }
   }, [search, reports]);
 
-  const fetchData = async () => {
-    try {
-      const q = query(collection(db, 'reports'), orderBy('submittedAt', 'desc'));
-      const snap = await getDocs(q);
-      setReports(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-      setFiltered(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-    } catch (e) { console.log(e); }
+  useEffect(() => {
+  const q = query(collection(db, 'reports'), orderBy('submittedAt', 'desc'));
+
+  const unsubscribe = onSnapshot(q, (snap) => {
+    const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    setReports(data);
+    setFiltered(data);
     setLoading(false);
-  };
+  });
+
+  return () => unsubscribe();
+}, []);
 
   if (loading) return (
     <View style={styles.center}>

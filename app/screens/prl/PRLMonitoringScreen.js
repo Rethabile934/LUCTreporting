@@ -3,7 +3,7 @@ import {
   View, Text, StyleSheet, FlatList,
   ActivityIndicator, TextInput
 } from 'react-native';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 
 export default function PRLMonitoringScreen() {
@@ -12,7 +12,18 @@ export default function PRLMonitoringScreen() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    const q = query(collection(db, 'reports'), orderBy('submittedAt', 'desc'));
+
+    const unsubscribe = onSnapshot(q, (snap) => {
+      const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      setReports(data);
+      setFiltered(data);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (search.trim() === '') {
@@ -26,16 +37,6 @@ export default function PRLMonitoringScreen() {
       ));
     }
   }, [search, reports]);
-
-  const fetchData = async () => {
-    try {
-      const q = query(collection(db, 'reports'), orderBy('submittedAt', 'desc'));
-      const snap = await getDocs(q);
-      setReports(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-      setFiltered(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-    } catch (e) { console.log(e); }
-    setLoading(false);
-  };
 
   const getRate = (present, total) => {
     if (!present || !total) return 0;
@@ -70,7 +71,7 @@ export default function PRLMonitoringScreen() {
               <View style={styles.row}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.course}>{item.courseName}</Text>
-                  <Text style={styles.sub}>👨‍🏫 {item.lecturerName} · {item.weekOfReporting}</Text>
+                  <Text style={styles.sub}> {item.lecturerName} · {item.weekOfReporting}</Text>
                 </View>
                 <View style={[styles.badge, { backgroundColor: color }]}>
                   <Text style={styles.badgeText}>{rate}%</Text>
@@ -79,7 +80,7 @@ export default function PRLMonitoringScreen() {
               <View style={styles.barBg}>
                 <View style={[styles.barFill, { width: `${rate}%`, backgroundColor: color }]} />
               </View>
-              <Text style={styles.detail}>📍 {item.venue} · 🕐 {item.scheduledTime}</Text>
+              <Text style={styles.detail}> {item.venue} · {item.scheduledTime}</Text>
               <Text style={styles.detail}>
                 👥 {item.actualStudentsPresent} of {item.totalRegisteredStudents} present
               </Text>

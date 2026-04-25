@@ -3,7 +3,7 @@ import {
   View, Text, StyleSheet, FlatList,
   ActivityIndicator, TextInput
 } from 'react-native';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 
 export default function MonitoringScreen() {
@@ -13,7 +13,16 @@ export default function MonitoringScreen() {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    fetchReports();
+    const q = query(collection(db, 'reports'), orderBy('submittedAt', 'desc'));
+
+    const unsubscribe = onSnapshot(q, (snap) => {
+      const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      setReports(data);
+      setFiltered(data);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -28,19 +37,6 @@ export default function MonitoringScreen() {
       ));
     }
   }, [search, reports]);
-
-  const fetchReports = async () => {
-    try {
-      const q = query(collection(db, 'reports'), orderBy('submittedAt', 'desc'));
-      const snap = await getDocs(q);
-      const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      setReports(data);
-      setFiltered(data);
-    } catch (e) {
-      console.log(e);
-    }
-    setLoading(false);
-  };
 
   if (loading) return (
     <View style={styles.center}>
@@ -70,9 +66,9 @@ export default function MonitoringScreen() {
               <Text style={styles.course}>{item.courseName}</Text>
               <Text style={styles.week}>{item.weekOfReporting}</Text>
             </View>
-            <Text style={styles.detail}>👨‍🏫 {item.lecturerName}</Text>
-            <Text style={styles.detail}>📚 {item.topicTaught}</Text>
-            <Text style={styles.detail}>📍 {item.venue} · {item.scheduledTime}</Text>
+            <Text style={styles.detail}>{item.lecturerName}</Text>
+            <Text style={styles.detail}>{item.topicTaught}</Text>
+            <Text style={styles.detail}> {item.venue} · {item.scheduledTime}</Text>
             <Text style={styles.detail}>
               👥 {item.actualStudentsPresent} / {item.totalRegisteredStudents} students
             </Text>
@@ -90,32 +86,16 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f4f6fb' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   search: {
-    backgroundColor: '#fff',
-    margin: 16,
-    marginBottom: 0,
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    fontSize: 14,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    color: '#222'
+    backgroundColor: '#fff', margin: 16, marginBottom: 0, borderRadius: 10,
+    paddingHorizontal: 14, paddingVertical: 10, fontSize: 14,
+    borderWidth: 1, borderColor: '#ddd', color: '#222'
   },
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    elevation: 3
+    backgroundColor: '#fff', borderRadius: 12, padding: 16,
+    marginBottom: 12, shadowColor: '#000', shadowOpacity: 0.06,
+    shadowRadius: 6, elevation: 3
   },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8
-  },
+  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
   course: { fontSize: 15, fontWeight: '700', color: '#1a1a2e', flex: 1 },
   week: { fontSize: 12, color: '#4A90D9', fontWeight: '600' },
   detail: { fontSize: 13, color: '#555', marginBottom: 4 },
