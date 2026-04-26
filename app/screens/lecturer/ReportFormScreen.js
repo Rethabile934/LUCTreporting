@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity,
-  StyleSheet, Alert, ActivityIndicator
+  StyleSheet, Alert, ActivityIndicator, Platform
 } from 'react-native';
-import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../../firebase/config';
 import { useAuth } from '../../context/AuthContext';
 import InputField from '../../components/InputField';
+import { apiSubmitReport } from '../../firebase/api';
 
 export default function ReportFormScreen() {
   const { user } = useAuth();
@@ -34,27 +33,43 @@ export default function ReportFormScreen() {
   const handleSubmit = async () => {
     const empty = Object.entries(form).find(([_, v]) => v.trim() === '');
     if (empty) {
-      Alert.alert('Missing Field', `Please fill in: ${empty[0]}`);
+      if (Platform.OS === 'web') {
+        window.alert(`Please fill in: ${empty[0]}`);
+      } else {
+        Alert.alert('Missing Field', `Please fill in: ${empty[0]}`);
+      }
       return;
     }
 
     setLoading(true);
     try {
-      await addDoc(collection(db, 'reports'), {
-        ...form,
-        submittedBy: user.uid,
-        submittedAt: new Date().toISOString()
-      });
-      Alert.alert('Success', 'Report submitted successfully!');
-      setForm({
-        facultyName: '', className: '', weekOfReporting: '',
-        dateOfLecture: '', courseName: '', courseCode: '',
-        lecturerName: '', actualStudentsPresent: '',
-        totalRegisteredStudents: '', venue: '', scheduledTime: '',
-        topicTaught: '', learningOutcomes: '', recommendations: ''
-      });
+      const response = await apiSubmitReport(form);
+      if (response.reportId) {
+        if (Platform.OS === 'web') {
+          window.alert('Report submitted successfully!');
+        } else {
+          Alert.alert('Success', 'Report submitted successfully!');
+        }
+        setForm({
+          facultyName: '', className: '', weekOfReporting: '',
+          dateOfLecture: '', courseName: '', courseCode: '',
+          lecturerName: '', actualStudentsPresent: '',
+          totalRegisteredStudents: '', venue: '', scheduledTime: '',
+          topicTaught: '', learningOutcomes: '', recommendations: ''
+        });
+      } else {
+        if (Platform.OS === 'web') {
+          window.alert(response.error || 'Something went wrong');
+        } else {
+          Alert.alert('Error', response.error || 'Something went wrong');
+        }
+      }
     } catch (error) {
-      Alert.alert('Error', error.message);
+      if (Platform.OS === 'web') {
+        window.alert(error.message);
+      } else {
+        Alert.alert('Error', error.message);
+      }
     }
     setLoading(false);
   };

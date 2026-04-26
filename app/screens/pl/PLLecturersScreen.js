@@ -3,8 +3,7 @@ import {
   View, Text, StyleSheet, FlatList,
   ActivityIndicator, TextInput
 } from 'react-native';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../../firebase/config';
+import { apiGetLecturers, apiGetReports } from '../../firebase/api';
 
 export default function PLLecturersScreen() {
   const [lecturers, setLecturers] = useState([]);
@@ -28,12 +27,8 @@ export default function PLLecturersScreen() {
 
   const fetchLecturers = async () => {
     try {
-      const q = query(collection(db, 'users'), where('role', '==', 'lecturer'));
-      const snap = await getDocs(q);
-      const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-      const repSnap = await getDocs(collection(db, 'reports'));
-      const reports = repSnap.docs.map(d => d.data());
+      const data = await apiGetLecturers();
+      const reports = await apiGetReports();
 
       const merged = data.map(l => ({
         ...l,
