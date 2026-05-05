@@ -12,7 +12,16 @@ export default function PLMonitoringScreen() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    const q = query(collection(db, 'reports'), orderBy('submittedAt', 'desc'));
+    const unsubscribe = onSnapshot(q, (snap) => {
+      const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      setReports(data);
+      setFiltered(data);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (search.trim() === '') {
@@ -26,19 +35,6 @@ export default function PLMonitoringScreen() {
       ));
     }
   }, [search, reports]);
-
-  useEffect(() => {
-  const q = query(collection(db, 'reports'), orderBy('submittedAt', 'desc'));
-
-  const unsubscribe = onSnapshot(q, (snap) => {
-    const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    setReports(data);
-    setFiltered(data);
-    setLoading(false);
-  });
-
-  return () => unsubscribe();
-}, []);
 
   if (loading) return (
     <View style={styles.center}>
@@ -66,12 +62,12 @@ export default function PLMonitoringScreen() {
               <Text style={styles.course}>{item.courseName}</Text>
               <Text style={styles.week}>{item.weekOfReporting}</Text>
             </View>
-            <Text style={styles.detail}> {item.lecturerName}</Text>
-            <Text style={styles.detail}>{item.facultyName}</Text>
-            <Text style={styles.detail}> {item.venue} · {item.scheduledTime}</Text>
-            <Text style={styles.detail}>{item.dateOfLecture}</Text>
+            <Text style={styles.detail}>lecturerName: {item.lecturerName}</Text>
+            <Text style={styles.detail}>facultyName: {item.facultyName}</Text>
+            <Text style={styles.detail}>venue{item.venue} · scheduledTime: {item.scheduledTime}</Text>
+            <Text style={styles.detail}>dateOfLecture: {item.dateOfLecture}</Text>
             <Text style={styles.detail}>
-              👥 {item.actualStudentsPresent}/{item.totalRegisteredStudents} present
+               Students: {item.actualStudentsPresent}/{item.totalRegisteredStudents} present
             </Text>
           </View>
         )}

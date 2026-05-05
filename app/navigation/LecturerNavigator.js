@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import LecturerDashboard from '../screens/lecturer/LecturerDashboard';
 import ReportFormScreen from '../screens/lecturer/ReportFormScreen';
@@ -8,13 +8,16 @@ import ClassesScreen from '../screens/lecturer/ClassesScreen';
 import StudentAttendanceScreen from '../screens/lecturer/StudentAttendanceScreen';
 import RatingScreen from '../screens/lecturer/LecturerRatingScreen';
 import ExportReportScreen from '../screens/lecturer/ExportReportScreen';
+import MyReportsScreen from '../screens/lecturer/MyReportsScreen';
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 const icon = (name) => ({ color }) => {
   const icons = {
     Home: 'home',
-    Report: 'document-text',
+    Reports: 'document-text',
+    NewReport: 'add-circle',
     Classes: 'school',
     Attendance: 'people',
     Rating: 'star',
@@ -22,6 +25,16 @@ const icon = (name) => ({ color }) => {
   };
   return <Ionicons name={icons[name]} size={22} color={color} />;
 };
+
+function ReportStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="MyReports" component={MyReportsScreen} />
+      <Stack.Screen name="Report" component={ReportFormScreen} />
+    </Stack.Navigator>
+  );
+}
+
 export default function LecturerNavigator() {
   return (
     <Tab.Navigator
@@ -40,9 +53,14 @@ export default function LecturerNavigator() {
         options={{ title: 'Dashboard', tabBarIcon: icon('Home') }}
       />
       <Tab.Screen
-        name="Report"
+        name="Reports"
+        component={ReportStack}
+        options={{ title: 'My Reports', headerShown: false, tabBarIcon: icon('Reports') }}
+      />
+      <Tab.Screen
+        name="NewReport"
         component={ReportFormScreen}
-        options={{ title: 'New Report', tabBarIcon: icon('Report') }}
+        options={{ title: 'New Report', tabBarIcon: icon('NewReport') }}
       />
       <Tab.Screen
         name="Classes"
@@ -59,11 +77,10 @@ export default function LecturerNavigator() {
         component={RatingScreen}
         options={{ title: 'My Ratings', tabBarIcon: icon('Rating') }}
       />
-
       <Tab.Screen
         name="Export"
         component={ExportReportScreen}
-        options={{title: 'Export',tabBarIcon: () => <Text style={{ fontSize: 20 }}>📥</Text>}}
+        options={{ title: 'Export', tabBarIcon: icon('Export') }}
       />
     </Tab.Navigator>
   );

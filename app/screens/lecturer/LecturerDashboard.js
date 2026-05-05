@@ -74,9 +74,9 @@ export default function LecturerDashboard() {
 
       <View style={styles.infoBox}>
         <Text style={styles.infoTitle}> Quick Tips</Text>
-        <Text style={styles.infoText}>• Use the 📝 tab to submit a new lecture report{'\n'}
-- Check 📋 to view student attendance records{'\n'}
-- See ⭐ to view your ratings from students</Text>
+        <Text style={styles.infoText}>• Use the tab to submit a new lecture report{'\n'}
+- Check  to view student attendance records{'\n'}
+- See to view your ratings from students</Text>
       </View>
     </ScrollView>
   );

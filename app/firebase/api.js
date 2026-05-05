@@ -1,6 +1,6 @@
 const BASE_URL = 'https://luctreporting-backend-production.up.railway.app/api';
 
-// Store token in memory
+
 let authToken = null;
 
 export const setToken = (token) => {
@@ -102,6 +102,23 @@ export const apiSubmitFeedback = async (reportId, comment) => {
 export const apiGetFeedback = async () => {
   const res = await fetch(`${BASE_URL}/feedback`, {
     method: 'GET',
+    headers: headers()
+  });
+  return res.json();
+};
+
+export const apiUpdateReport = async (reportId, reportData) => {
+  const res = await fetch(`${BASE_URL}/reports/${reportId}`, {
+    method: 'PUT',
+    headers: headers(),
+    body: JSON.stringify(reportData)
+  });
+  return res.json();
+};
+
+export const apiDeleteReport = async (reportId) => {
+  const res = await fetch(`${BASE_URL}/reports/${reportId}`, {
+    method: 'DELETE',
     headers: headers()
   });
   return res.json();

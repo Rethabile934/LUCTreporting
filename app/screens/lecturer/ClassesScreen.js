@@ -3,43 +3,57 @@ import {
   View, Text, StyleSheet, FlatList,
   ActivityIndicator, TextInput
 } from 'react-native';
-import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 import { useAuth } from '../../context/AuthContext';
 
 export default function ClassesScreen() {
   const { user } = useAuth();
-  const [reports, setReports] = useState([]);
+  const [classes, setClasses] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
 
-  useEffect(() => { fetchReports(); }, []);
+  useEffect(() => { fetchClasses(); }, []);
 
   useEffect(() => {
     if (search.trim() === '') {
-      setFiltered(reports);
+      setFiltered(classes);
     } else {
       const q = search.toLowerCase();
-      setFiltered(reports.filter(r =>
-        r.className?.toLowerCase().includes(q) ||
-        r.courseName?.toLowerCase().includes(q) ||
-        r.venue?.toLowerCase().includes(q)
+      setFiltered(classes.filter(c =>
+        c.courseName?.toLowerCase().includes(q) ||
+        c.courseCode?.toLowerCase().includes(q) ||
+        c.facultyName?.toLowerCase().includes(q)
       ));
     }
-  }, [search, reports]);
+  }, [search, classes]);
 
-  const fetchReports = async () => {
+  const fetchClasses = async () => {
     try {
+    
       const q = query(
-        collection(db, 'reports'),
-        where('submittedBy', '==', user.uid),
-        orderBy('submittedAt', 'desc')
+        collection(db, 'courses'),
+        where('assignedTo', '==', user.email)
       );
       const snap = await getDocs(q);
       const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      setReports(data);
-      setFiltered(data);
+
+    
+      const reportsSnap = await getDocs(
+        query(collection(db, 'reports'), where('submittedBy', '==', user.uid))
+      );
+      const reports = reportsSnap.docs.map(d => d.data());
+
+      const merged = data.map(course => ({
+        ...course,
+        reportCount: reports.filter(r =>
+          r.courseCode === course.courseCode
+        ).length
+      }));
+
+      setClasses(merged);
+      setFiltered(merged);
     } catch (e) { console.log(e); }
     setLoading(false);
   };
@@ -54,7 +68,7 @@ export default function ClassesScreen() {
     <View style={styles.container}>
       <TextInput
         style={styles.search}
-        placeholder="Search by class, course or venue..."
+        placeholder="Search by course, code or faculty..."
         value={search}
         onChangeText={setSearch}
         placeholderTextColor="#aaa"
@@ -64,21 +78,43 @@ export default function ClassesScreen() {
         keyExtractor={item => item.id}
         contentContainerStyle={{ padding: 16 }}
         ListEmptyComponent={
-          <Text style={styles.empty}>No classes reported yet.</Text>
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyIcon}>📚</Text>
+            <Text style={styles.empty}>No classes assigned yet.</Text>
+            <Text style={styles.emptySub}>
+              Your Program Leader hasn't assigned any classes to you yet.
+            </Text>
+          </View>
         }
         renderItem={({ item }) => (
           <View style={styles.card}>
             <View style={styles.cardHeader}>
-              <Text style={styles.className}>{item.className}</Text>
-              <Text style={styles.week}>{item.weekOfReporting}</Text>
+              <View style={styles.iconBox}>
+                <Text style={styles.iconText}></Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.courseName}>{item.courseName}</Text>
+                <Text style={styles.courseCode}>{item.courseCode}</Text>
+              </View>
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>{item.reportCount} reports</Text>
+              </View>
             </View>
-            <Text style={styles.course}>{item.courseName} · {item.courseCode}</Text>
-            <Text style={styles.detail}> {item.venue}</Text>
-            <Text style={styles.detail}> {item.scheduledTime}</Text>
-            <Text style={styles.detail}> {item.dateOfLecture}</Text>
-            <Text style={styles.detail}>
-              👥 {item.actualStudentsPresent}/{item.totalRegisteredStudents} present
-            </Text>
+            <View style={styles.divider} />
+            <View style={styles.detailRow}>
+              <Text style={styles.detail}> {item.facultyName}</Text>
+            </View>
+            <View style={styles.statusRow}>
+              <View style={[styles.statusBadge,
+                item.reportCount > 0
+                  ? styles.statusActive
+                  : styles.statusPending
+              ]}>
+                <Text style={styles.statusText}>
+                  {item.reportCount > 0 ? '✓ Reporting Active' : '⏳ No Reports Yet'}
+                </Text>
+              </View>
+            </View>
           </View>
         )}
       />
@@ -103,7 +139,7 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 14,
     padding: 16,
     marginBottom: 12,
     shadowColor: '#000',
@@ -113,12 +149,47 @@ const styles = StyleSheet.create({
   },
   cardHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 6
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 10
   },
-  className: { fontSize: 15, fontWeight: '700', color: '#1a1a2e' },
-  week: { fontSize: 12, color: '#4A90D9', fontWeight: '600' },
-  course: { fontSize: 13, color: '#555', marginBottom: 8, fontWeight: '600' },
-  detail: { fontSize: 13, color: '#666', marginBottom: 3 },
-  empty: { textAlign: 'center', color: '#aaa', marginTop: 40, fontSize: 15 }
+  iconBox: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
+    backgroundColor: '#e8f0fb',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  iconText: { fontSize: 22 },
+  courseName: { fontSize: 15, fontWeight: '700', color: '#1a1a2e' },
+  courseCode: { fontSize: 12, color: '#4A90D9', fontWeight: '600', marginTop: 2 },
+  badge: {
+    backgroundColor: '#e8f0fb',
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 4
+  },
+  badgeText: { color: '#4A90D9', fontWeight: '700', fontSize: 12 },
+  divider: { height: 1, backgroundColor: '#f0f0f0', marginBottom: 10 },
+  detailRow: { marginBottom: 10 },
+  detail: { fontSize: 13, color: '#666' },
+  statusRow: { flexDirection: 'row' },
+  statusBadge: {
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 4
+  },
+  statusActive: { backgroundColor: '#e8f8f0' },
+  statusPending: { backgroundColor: '#fff8e8' },
+  statusText: { fontSize: 12, fontWeight: '600', color: '#555' },
+  emptyContainer: { alignItems: 'center', marginTop: 60 },
+  emptyIcon: { fontSize: 48, marginBottom: 12 },
+  empty: { fontSize: 16, fontWeight: '700', color: '#555', marginBottom: 6 },
+  emptySub: {
+    fontSize: 13,
+    color: '#aaa',
+    textAlign: 'center',
+    paddingHorizontal: 40
+  }
 });

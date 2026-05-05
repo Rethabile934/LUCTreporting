@@ -5,78 +5,93 @@ import {
 } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 import InputField from '../../components/InputField';
-import { apiSubmitReport } from '../../firebase/api';
+import { apiSubmitReport, apiUpdateReport } from '../../firebase/api';
 
-export default function ReportFormScreen() {
+export default function ReportFormScreen({ route }) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
 
+  const existingReport = route?.params?.report || null;
+  const isEditing = !!existingReport;
+
   const [form, setForm] = useState({
-    facultyName: '',
-    className: '',
-    weekOfReporting: '',
-    dateOfLecture: '',
-    courseName: '',
-    courseCode: '',
-    lecturerName: '',
-    actualStudentsPresent: '',
-    totalRegisteredStudents: '',
-    venue: '',
-    scheduledTime: '',
-    topicTaught: '',
-    learningOutcomes: '',
-    recommendations: ''
+    facultyName: existingReport?.facultyName || '',
+    className: existingReport?.className || '',
+    weekOfReporting: existingReport?.weekOfReporting || '',
+    dateOfLecture: existingReport?.dateOfLecture || '',
+    courseName: existingReport?.courseName || '',
+    courseCode: existingReport?.courseCode || '',
+    lecturerName: existingReport?.lecturerName || '',
+    actualStudentsPresent: existingReport?.actualStudentsPresent || '',
+    totalRegisteredStudents: existingReport?.totalRegisteredStudents || '',
+    venue: existingReport?.venue || '',
+    scheduledTime: existingReport?.scheduledTime || '',
+    topicTaught: existingReport?.topicTaught || '',
+    learningOutcomes: existingReport?.learningOutcomes || '',
+    recommendations: existingReport?.recommendations || ''
   });
 
   const update = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
 
+  const showAlert = (title, message) => {
+    if (Platform.OS === 'web') {
+      window.alert(`${title}: ${message}`);
+    } else {
+      Alert.alert(title, message);
+    }
+  };
+
   const handleSubmit = async () => {
     const empty = Object.entries(form).find(([_, v]) => v.trim() === '');
     if (empty) {
-      if (Platform.OS === 'web') {
-        window.alert(`Please fill in: ${empty[0]}`);
-      } else {
-        Alert.alert('Missing Field', `Please fill in: ${empty[0]}`);
-      }
+      showAlert('Missing Field', `Please fill in: ${empty[0]}`);
       return;
     }
 
     setLoading(true);
     try {
-      const response = await apiSubmitReport(form);
-      if (response.reportId) {
-        if (Platform.OS === 'web') {
-          window.alert('Report submitted successfully!');
+      if (isEditing) {
+        
+        const response = await apiUpdateReport(existingReport.id, form);
+        if (response.message) {
+          showAlert('Success', 'Report updated successfully!');
         } else {
-          Alert.alert('Success', 'Report submitted successfully!');
+          showAlert('Error', response.error || 'Something went wrong');
         }
-        setForm({
-          facultyName: '', className: '', weekOfReporting: '',
-          dateOfLecture: '', courseName: '', courseCode: '',
-          lecturerName: '', actualStudentsPresent: '',
-          totalRegisteredStudents: '', venue: '', scheduledTime: '',
-          topicTaught: '', learningOutcomes: '', recommendations: ''
-        });
       } else {
-        if (Platform.OS === 'web') {
-          window.alert(response.error || 'Something went wrong');
+        const response = await apiSubmitReport(form);
+        if (response.reportId) {
+          showAlert('Success', 'Report submitted successfully!');
+          setForm({
+            facultyName: '', className: '', weekOfReporting: '',
+            dateOfLecture: '', courseName: '', courseCode: '',
+            lecturerName: '', actualStudentsPresent: '',
+            totalRegisteredStudents: '', venue: '', scheduledTime: '',
+            topicTaught: '', learningOutcomes: '', recommendations: ''
+          });
         } else {
-          Alert.alert('Error', response.error || 'Something went wrong');
+          showAlert('Error', response.error || 'Something went wrong');
         }
       }
     } catch (error) {
-      if (Platform.OS === 'web') {
-        window.alert(error.message);
-      } else {
-        Alert.alert('Error', error.message);
-      }
+      showAlert('Error', error.message);
     }
     setLoading(false);
   };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Lecturer Report Form</Text>
+      <Text style={styles.title}>
+        {isEditing ? 'Edit Report' : 'Lecturer Report Form'}
+      </Text>
+
+      {isEditing && (
+        <View style={styles.editBanner}>
+          <Text style={styles.editBannerText}>
+            You are editing an existing report
+          </Text>
+        </View>
+      )}
 
       <InputField label="Faculty Name" value={form.facultyName}
         onChangeText={v => update('facultyName', v)} placeholder="e.g. Faculty of ICT" />
@@ -125,10 +140,16 @@ export default function ReportFormScreen() {
         onChangeText={v => update('recommendations', v)}
         placeholder="Any recommendations..." multiline numberOfLines={3} />
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
+      <TouchableOpacity
+        style={[styles.button, isEditing && styles.editButton]}
+        onPress={handleSubmit}
+        disabled={loading}
+      >
         {loading
           ? <ActivityIndicator color="#fff" />
-          : <Text style={styles.buttonText}>Submit Report</Text>
+          : <Text style={styles.buttonText}>
+              {isEditing ? 'Update Report' : 'Submit Report'}
+            </Text>
         }
       </TouchableOpacity>
     </ScrollView>
@@ -138,10 +159,23 @@ export default function ReportFormScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
   content: { padding: 20, paddingBottom: 40 },
-  title: { fontSize: 22, fontWeight: '700', color: '#1a1a2e', marginBottom: 20 },
-  button: {
-    backgroundColor: '#4A90D9', borderRadius: 10,
-    paddingVertical: 14, alignItems: 'center', marginTop: 10
+  title: { fontSize: 22, fontWeight: '700', color: '#1a1a2e', marginBottom: 16 },
+  editBanner: {
+    backgroundColor: '#fff8e1',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 16,
+    borderLeftWidth: 4,
+    borderLeftColor: '#f39c12'
   },
+  editBannerText: { fontSize: 13, color: '#b7770d', fontWeight: '600' },
+  button: {
+    backgroundColor: '#4A90D9',
+    borderRadius: 10,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginTop: 10
+  },
+  editButton: { backgroundColor: '#27ae60' },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: '700' }
 });

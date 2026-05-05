@@ -71,7 +71,7 @@ export default function PLReportsScreen() {
             <Text style={styles.detail}>{item.lecturerName}</Text>
             <Text style={styles.detail}>{item.topicTaught}</Text>
             <Text style={styles.detail}>
-              👥 {item.actualStudentsPresent}/{item.totalRegisteredStudents} present
+             {item.actualStudentsPresent}/{item.totalRegisteredStudents} present
             </Text>
             {item.feedback && (
               <View style={styles.feedbackBox}>

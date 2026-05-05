@@ -83,8 +83,8 @@ export default function PRLCoursesScreen() {
                 <Text style={styles.badgeText}>{item.count} reports</Text>
               </View>
             </View>
-            <Text style={styles.detail}>👨‍🏫 {item.lecturerName}</Text>
-            <Text style={styles.detail}>🏫 {item.facultyName}</Text>
+            <Text style={styles.detail}>{item.lecturerName}</Text>
+            <Text style={styles.detail}>{item.facultyName}</Text>
           </View>
         )}
       />

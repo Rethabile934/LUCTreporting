@@ -82,7 +82,7 @@ export default function PRLMonitoringScreen() {
               </View>
               <Text style={styles.detail}> {item.venue} · {item.scheduledTime}</Text>
               <Text style={styles.detail}>
-                👥 {item.actualStudentsPresent} of {item.totalRegisteredStudents} present
+                {item.actualStudentsPresent} of {item.totalRegisteredStudents} present
               </Text>
             </View>
           );
