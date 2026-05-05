@@ -129,24 +129,24 @@ export default function ExportReportScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>📊 Export Reports</Text>
+      <Text style={styles.title}>Export Reports</Text>
       <Text style={styles.subtitle}>Download lecture reports as Excel files</Text>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>📝 My Reports</Text>
+        <Text style={styles.cardTitle}>My Reports</Text>
         <Text style={styles.cardDesc}>
           Export all reports submitted by you in Excel format.
         </Text>
         <TouchableOpacity style={styles.button} onPress={fetchAndExport} disabled={loading}>
           {loading
             ? <ActivityIndicator color="#fff" />
-            : <Text style={styles.buttonText}>⬇ Download My Reports</Text>
+            : <Text style={styles.buttonText}> Download My Reports</Text>
           }
         </TouchableOpacity>
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>🏫 All Faculty Reports</Text>
+        <Text style={styles.cardTitle}>All Faculty Reports</Text>
         <Text style={styles.cardDesc}>
           Export all reports from all lecturers across the faculty.
         </Text>
@@ -157,7 +157,7 @@ export default function ExportReportScreen() {
         >
           {loading
             ? <ActivityIndicator color="#fff" />
-            : <Text style={styles.buttonText}>⬇ Download All Reports</Text>
+            : <Text style={styles.buttonText}> Download All Reports</Text>
           }
         </TouchableOpacity>
       </View>
@@ -176,8 +176,8 @@ export default function ExportReportScreen() {
           {preview.map((item, index) => (
             <View key={index} style={styles.previewCard}>
               <Text style={styles.previewCourse}>{item.courseName}</Text>
-              <Text style={styles.previewDetail}>📅 {item.dateOfLecture} · {item.weekOfReporting}</Text>
-              <Text style={styles.previewDetail}>👥 {item.actualStudentsPresent}/{item.totalRegisteredStudents} students</Text>
+              <Text style={styles.previewDetail}>dateOfLecture{item.dateOfLecture} · {item.weekOfReporting}</Text>
+              <Text style={styles.previewDetail}actualStudentsPresent>{item.actualStudentsPresent}/{item.totalRegisteredStudents} students</Text>
             </View>
           ))}
         </View>
