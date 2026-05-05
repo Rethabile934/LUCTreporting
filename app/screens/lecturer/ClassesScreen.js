@@ -111,7 +111,7 @@ export default function ClassesScreen() {
                   : styles.statusPending
               ]}>
                 <Text style={styles.statusText}>
-                  {item.reportCount > 0 ? '✓ Reporting Active' : '⏳ No Reports Yet'}
+                  {item.reportCount > 0 ? '✓ Reporting Active' : ' No Reports Yet'}
                 </Text>
               </View>
             </View>
