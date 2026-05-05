@@ -123,3 +123,38 @@ export const apiDeleteReport = async (reportId) => {
   });
   return res.json();
 };
+
+// ── Courses ──────────────────────────────────────────
+export const apiGetCourses = async () => {
+  const res = await fetch(`${BASE_URL}/courses`, {
+    method: 'GET',
+    headers: headers()
+  });
+  return res.json();
+};
+
+export const apiCreateCourse = async (courseData) => {
+  const res = await fetch(`${BASE_URL}/courses`, {
+    method: 'POST',
+    headers: headers(),
+    body: JSON.stringify(courseData)
+  });
+  return res.json();
+};
+
+export const apiUpdateCourse = async (courseId, courseData) => {
+  const res = await fetch(`${BASE_URL}/courses/${courseId}`, {
+    method: 'PUT',
+    headers: headers(),
+    body: JSON.stringify(courseData)
+  });
+  return res.json();
+};
+
+export const apiDeleteCourse = async (courseId) => {
+  const res = await fetch(`${BASE_URL}/courses/${courseId}`, {
+    method: 'DELETE',
+    headers: headers()
+  });
+  return res.json();
+};
